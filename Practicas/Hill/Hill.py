@@ -2,11 +2,10 @@
 # -*- coding: utf-8 -*-
 
 import numpy as np
-from numpy.linalg import inv
-from numpy.linalg import det
 import math
+from Operaciones import *
 
-alfabeto = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
+alfabeto = "ABCDEFGHIJKLMNNOPQRSTUVWXYZ"
 
 '''
     Método que dada una palabra clave y el mensaje plano a codificar
@@ -15,23 +14,25 @@ alfabeto = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
     @param mensaje - string texto plano para cifrar
 '''
 def codificar( clave, mensaje):
+
     rtnCadena = ""
     #1. Construcción y verificación de la Matriz correspondiente a la clave
     matrizClave = getMatrizClave(clave)
 
-    determinante = int(round(det(matrizClave))) # Obtenemos el determinante de la matriz clave
-    print("Determinante:    "+ str(determinante))
-    determinanteModular = determinante%26
-    print("DeterminanteModular:    "+str(determinanteModular))
-    inversoDeterminante = obtenerInverso(int(determinanteModular), 26) # Obtenemos el inverso en Z_26    
+    determinante = obtenerDeterminante(matrizClave) # Obtenemos el determinante de la matriz clave
+    #print("Determinante:    "+ str(determinante))
+    determinanteModular = determinante%len(alfabeto)
+    #print("DeterminanteModular:    "+str(determinanteModular))
+    inversoDeterminante = obtenerInverso(int(determinanteModular), len(alfabeto)) # Obtenemos el inverso en Z_26    
 
     #2. Construcción de n-gramas del mensaje
     matrizMensaje = getMatrizMensaje(mensaje, len(matrizClave))
     #3. Multiplicamos Matrices 
-    claveXmensaje = multiplicaMatrices(matrizClave, matrizMensaje)
+    claveXmensaje = multiplicaMatrices(matrizClave, matrizMensaje, len(alfabeto))
     #4. Recuperamos mensaje ofuscado
     rtnCadena = getMessageCipher(claveXmensaje)
     return rtnCadena
+
 
 '''
     Dada la palabra clave, se genera la matriz con los índices de las letras
@@ -58,12 +59,7 @@ def getMatrizClave(clave):
     else:   # no es exacto la raíz cuadrada del la clave
         print("Llave invalida, no se puede formar una matriz de NxN")
         quit()
-    '''
-    # Verificamos que la matriz tenga inversa en Z_26
-    if int( round(det(rtnClave)%len(alfabeto))) != 1:
-        print("Llave inválida, la matriz de la llave no tiene inversa en Z_26")
-        quit()
-    '''
+
     return rtnClave
 
 
@@ -119,35 +115,24 @@ def completaCadena( longitudClave, mensaje):
     diferencia = len(mensaje)%longitudClave
     
     if diferencia!=0:
-        print("La diferencia es: " + str(diferencia))
+        #print("La diferencia es: " + str(diferencia))
         for i in range(longitudClave-diferencia):
             mensaje += "X"			
     
     return mensaje;
-	
 
 '''
-    Dada la matriz de la palabra clave y la matriz del mensaje
-    Se hace la multiplicación de ambas matrices para obtener los índices de cifrado
-    @param matrizClave - matriz de índices de la palabra clave
-    @param matrizMensaje - matriz de índices de las letras del mensaje
+    Método que quita los caracteres que no forman parte del alfabeto
 '''
-def multiplicaMatrices(matrizClave, matrizMensaje):
-    '''
-    rtnMultiplicacion = np.zeros((len(matrizClave), len(matrizMensaje) ) )
-    for h in range(len(rtnMultiplicacion)):
-        for i in range(len(matrizClave)):
-            a = 0
-            for j in range(len(matrizMensaje)):
-                a = a + (matrizClave[i][j]*matrizMensaje[i][j])
-
-            rtnMultiplicacion[h][i] = a % len(alfabeto)
-
-    return rtnMultiplicacion
-    '''    
-    rtnMultiplicacion = np.matmul(matrizMensaje, matrizClave)%len(alfabeto)
-    return rtnMultiplicacion
+def limpiaMensaje(mensaje):
+    mensajeLimpio = ""
+    for item in mensaje:
+        if item in alfabeto:
+            mensajeLimpio+=item
     
+    return mensajeLimpio
+
+
 
 '''
     Dada la matriz con los índices del mensaje cifrado o descifrado,
@@ -165,44 +150,6 @@ def getMessageCipher(matrizChiper):
     return rtnMensaje
 
 
-'''
-    Método que obtiene el número inverso de a modulo m
-'''
-def obtenerInverso(a,m):
-
-    c1 = 1
-    c2 = -(m/a) #coeficiente de a y b respectivamente
-    t1 = 0
-    t2 = 1 #coeficientes penultima corrida
-    r = m % a #residuo, asignamos 1 como condicion de entrada 
-    x=a
-    y=r
-    c = 0
-    while r !=0:
-    
-        c = x/y #cociente
-        r = x%y #residuo
-        #guardamos valores temporales de los coeficientes
-        #multiplicamos los coeficiente por -1*cociente de la division
-        c1*=-c
-        c2*=-c
-        #sumamos la corrida anterior
-        c1+=t1
-        c2+=t2
-        #actualizamos corrida anterior
-        t1=-(c1-t1)/c
-        t2=-(c2-t2)/c
-        x=y
-        y=r
-    
-    if x==1: #//residuo anterior es 1 , son primos relativos y el inverso existe
-        print("Existe Inverso: "+str(int(t2%26)))
-        return int(t2%26)
-        
-    else:
-        print("El determinante no tiene inverso en Z 26 !")
-        quit()
-
 
 '''
     Método que dada la matriz de los índices de las letras de la palabra clave
@@ -214,64 +161,74 @@ def decodificar( matrizClave, mensaje):
     rtnCadena = ""
     #1. Obtenemos la matriz inversa de la matriz clave
     #matrizInversa = inv(matrizClave)%len(alfabeto)
-    print("Matriz Clave")
+
+
+    matrizInversa = obtenerMatrizInversa(matrizClave, len(alfabeto))
+    print("Matriz Clave Decodifica")
     print(matrizClave)
+    print("Inversa a mano")
+    print(matrizInversa)
+    '''
 
+
+
+    print("Inversa Buena")
     inversa = np.linalg.inv(matrizClave) # Obtenemos la inversa de la matriz clave
+    print(inversa)
 
-    determinante = int(round(det(matrizClave))) # Obtenemos el determinante de la matriz clave
+    determinante = obtenerDeterminante(matrizClave) # Obtenemos el determinante de la matriz clave
     print("Determinante:    "+ str(determinante))
 
-    determinanteModular = determinante%26
+    determinanteModular = determinante%len(alfabeto)
     print("DeterminanteModular:    "+str(determinanteModular))
     
-    inversoDeterminante = obtenerInverso(int(determinanteModular), 26) # Obtenemos el inverso en Z_26
+    inversoDeterminante = obtenerInverso(int(determinanteModular), len(alfabeto)) # Obtenemos el inverso en Z_26
     print("InversoModular:     "+ str(inversoDeterminante))
-    
     inversa = determinante * inversa
-    print(inversa)
+    print("Inversa x Determinante")
+    print(inversa%len(alfabeto))
     matrizInversa = inversoDeterminante * inversa
-    
+    print("Matriz Inversa para decifrar")
+    print(matrizInversa%len(alfabeto))
+    '''
+
     #2. Construcción de n-gramas del mensaje
     matrizMensaje = getMatrizMensaje(mensaje, len(matrizClave))
     #3. Multiplicamos Matrices 
-    claveXmensaje = multiplicaMatrices(matrizInversa, matrizMensaje)
+    claveXmensaje = multiplicaMatrices(matrizInversa , matrizMensaje, len(alfabeto))
     #4. Recuperamos mensaje ofuscado
     rtnCadena = getMessageCipher(claveXmensaje)
     return rtnCadena
 
 
+if __name__ == "__main__":
+    
 
+    # INGRESO DEL TEXTO A CODIFICAR
+    print("\t CIFRADO DE HILL\n")
+    mensaje = raw_input("Ingresa el mensaje:    ")
+    mensaje = str.upper(mensaje).replace(" ", "")
+    mensaje = limpiaMensaje(mensaje)
 
+    # INGRESO DE LA PALABRA CLAVE A CODIFICAR EL TEXTO
+    clave = raw_input("Ingresa la clave:    ")
+    clave = str.upper(clave).replace(" ", "")
+    print("\n")
 
+    # IMPRIMIMOS LA INFORMACIÓN
+    print("Mensaje original:    "+ mensaje)
+    print("Clave:               "+ clave)
+    print("\n")
 
+    #FZHC
+    #CBFD
 
+    # CIFRAMOS
+    mensajeCodificado = codificar(clave, mensaje)
+    print("\n >>>> Mensaje codificado:     "+ mensajeCodificado)
+    print("\n")
+    matriz_clave = getMatrizClave(clave)
 
-# INGRESO DEL TEXTO A CODIFICAR
-mensaje = raw_input("Ingresa el mensaje:    ")
-mensaje = str.upper(mensaje).replace(" ", "")
-
-
-# INGRESO DE LA PALABRA CLAVE A CODIFICAR EL TEXTO
-clave = raw_input("Ingresa la clave:    ")
-clave = str.upper(clave).replace(" ", "")
-print("\n")
-
-# IMPRIMIMOS LA INFORMACIÓN
-print("Mensaje original:    "+ mensaje)
-print("Clave:               "+ clave)
-print("\n")
-
-
-#FZHC
-#CBFD
-
-# CIFRAMOS
-mensajeCodificado = codificar(clave, mensaje)
-print("\n >>>> Mensaje codificado:     "+ mensajeCodificado)
-print("\n")
-matriz_clave = getMatrizClave(clave)
-
-# DESCIFRAMOS
-mensajeDecodificado = decodificar(matriz_clave, mensajeCodificado)
-print("\n <<<< Mensaje decodificado:    "+ mensajeDecodificado)
+    # DESCIFRAMOS
+    mensajeDecodificado = decodificar(matriz_clave, mensajeCodificado)
+    print("\n <<<< Mensaje decodificado:    "+ mensajeDecodificado +"\n")
