@@ -1,11 +1,19 @@
-#! /usr/bin/python3
+#! /usr/bin/python
 # -*- coding: utf-8 -*-
+
+#   Criptografía y Seguridad
+#   Proyecto 1: Crifrado de Hill
+
+#   Autores:
+#   Tadeo Guillén Diana G
+#   Rivera González Damián
+
 
 import numpy as np
 import math
 from Operaciones import *
 
-alfabeto = "ABCDEFGHIJKLMNNOPQRSTUVWXYZ"
+alfabeto = "ABCDEFGHIJKLMNOPQRSTUVWXYZ" # Z 26
 
 '''
     Método que dada una palabra clave y el mensaje plano a codificar
@@ -160,37 +168,7 @@ def getMessageCipher(matrizChiper):
 def decodificar( matrizClave, mensaje):
     rtnCadena = ""
     #1. Obtenemos la matriz inversa de la matriz clave
-    #matrizInversa = inv(matrizClave)%len(alfabeto)
-
-
     matrizInversa = obtenerMatrizInversa(matrizClave, len(alfabeto))
-    print("Matriz Clave Decodifica")
-    print(matrizClave)
-    print("Inversa a mano")
-    print(matrizInversa)
-    '''
-
-
-
-    print("Inversa Buena")
-    inversa = np.linalg.inv(matrizClave) # Obtenemos la inversa de la matriz clave
-    print(inversa)
-
-    determinante = obtenerDeterminante(matrizClave) # Obtenemos el determinante de la matriz clave
-    print("Determinante:    "+ str(determinante))
-
-    determinanteModular = determinante%len(alfabeto)
-    print("DeterminanteModular:    "+str(determinanteModular))
-    
-    inversoDeterminante = obtenerInverso(int(determinanteModular), len(alfabeto)) # Obtenemos el inverso en Z_26
-    print("InversoModular:     "+ str(inversoDeterminante))
-    inversa = determinante * inversa
-    print("Inversa x Determinante")
-    print(inversa%len(alfabeto))
-    matrizInversa = inversoDeterminante * inversa
-    print("Matriz Inversa para decifrar")
-    print(matrizInversa%len(alfabeto))
-    '''
 
     #2. Construcción de n-gramas del mensaje
     matrizMensaje = getMatrizMensaje(mensaje, len(matrizClave))
@@ -201,6 +179,9 @@ def decodificar( matrizClave, mensaje):
     return rtnCadena
 
 
+#   Autores:
+#   Tadeo Guillén Diana G
+#   Rivera González Damián
 if __name__ == "__main__":
     
 
@@ -220,6 +201,7 @@ if __name__ == "__main__":
     print("Clave:               "+ clave)
     print("\n")
 
+    # Claves en Z 26
     #FZHC
     #CBFD
 

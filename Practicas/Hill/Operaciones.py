@@ -1,5 +1,12 @@
-#! /usr/bin/python3
+#! /usr/bin/python
 # -*- coding: utf-8 -*-
+
+#   Criptografía y Seguridad
+#   Proyecto 1: Crifrado de Hill
+
+#   Autores:
+#   Tadeo Guillén Diana G
+#   Rivera González Damián
 
 import numpy as np
 import math
@@ -11,14 +18,6 @@ import math
     @param matrizMensaje - matriz de índices de las letras del mensaje
 '''
 def multiplicaMatrices(matrizClave, matrizMensaje, modulo):
-    '''
-    print("Matriz Clave")
-    print(matrizClave)
-
-    print("Matriz Mensaje")
-    print(matrizMensaje)
-    '''
-
 
     rtnMultiplicacion = np.zeros((len(matrizMensaje), len(matrizClave) ) )
     
@@ -26,19 +25,10 @@ def multiplicaMatrices(matrizClave, matrizMensaje, modulo):
         for i in range(len(matrizClave)):
             a = 0
             for j in range(len(matrizMensaje[0])):
-                #print(str(matrizClave[j][i])+" - "+str(matrizMensaje[h][j]))
                 a = a + (matrizClave[j][i]*matrizMensaje[h][j])
 
             rtnMultiplicacion[h][i] = a % modulo
 
-    '''
-    print("Matriz multiplicada A Mano")
-    print(rtnMultiplicacion)
-
-    rtnMultiplicacion2 = np.matmul(matrizMensaje, matrizClave)%modulo
-    print("Multiplicación Python")
-    print(rtnMultiplicacion2)
-    '''
     return rtnMultiplicacion
 
 
@@ -114,8 +104,6 @@ def obtenerDeterminante(matriz):
         else:
             det = det - (matriz[i][0] * obtenerDeterminante(nuevaMatriz))
 
-
-    #print("Determinante Obtenido "+str(int(det)))
     return int(det)
 
 
