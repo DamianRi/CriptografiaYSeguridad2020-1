@@ -135,8 +135,76 @@ Con lo cual obtenemos el mensaje descifrado:\\
 Mediante el algoritmo de la criba cuadrática descomponer a $n = 87463$
 \begin{itemize}
 \item[a)] Encontrar B y M
+
+Escogemos la base de factorización como \[B' = \{-1,2,3,5,7,11,13,17,19,23,29,31\}\] 
+Generamos a $M = \lfloor \sqrt{87463} \rfloor = 295$
 \item[b)] Dar la base, sugerencia: en la base los enteros no pasa del número 31
+
+de donde tomamos a \[B = \{-1,2,3,5,13,17,19,29\}\]
 \item[c)] Descomponer n
+
+Calculamos la tabla con $t+1 = 9$ relaciones de x:
+
+
+\begin{center}
+
+\begin{tabular}{|c|c|c|c|c|c|}
+\hline 
+i & x & q(x) & Factores de q(x) & $a_i$ & $v_i$\\ 
+\hline 
+1 & 1 & 153 & $3^2\cdot 17$ & 296 & (0,0,1,0,0,1,0,0)\\ 
+\hline
+2 & 4 & 1938& $2\cdot3\cdot17\cdot19$ & 299 & (0,1,1,0,0,1,1,0)\\ 
+\hline 
+3 & 12 & 6786 & $2\cdot3^2\cdot 13\cdot29$ & 307 & (0,1,1,0,1,0,0,1)\\ 
+\hline
+4 & -17 & -10179 & $-3^2\cdot 13 \cdot 29$ & 278 & (1,0,1,0,1,0,0,1)\\ 
+\hline
+5 & 21 & 12393 & $3^6\cdot 17$ & 316 & (0,0,1,0,0,1,0,0)\\ 
+\hline
+6 & -30 & -17238 & $-2\cdot3\cdot13^2\cdot17$ & 265 & (1,1,1,0,1,1,0,0)\\ 
+\hline
+7 & 52 & 32946 & $2\cdot3\cdot17^2\cdot19$ & 347 & (0,1,1,0,0,1,1,0)\\ 
+\hline
+8 & -53 & -28899 & $-3^2\cdot 13^2 \cdot 19$ & 242& (0,0,1,0,1,0,1,0)\\ 
+\hline
+9 & 118 & 83106 & $2\cdot3^7\cdot 19$ & 413& (0,1,1,0,0,0,1,0)\\ 
+\hline
+\end{tabular} 
+\end{center}
+
+Tomamos a \[T = \{1,5\}\]
+
+Calculamos a $x$ como \[x = a_1 \cdot a_5 mod (87463) = 296*316 mod (87463) = 6073 \]
+
+Calculamos todos los $l_i$
+
+\begin{equation*}
+\begin{split}
+&l_1 = 0\\
+&l_2 = 0\\
+&l_3 = \frac{2+6}{2} = 4\\
+&l_4 = 0\\
+&l_5 = 0\\
+&l_6 = \frac{1+1}{2} = 1\\
+&l_7 = 0\\
+&l_8 = 0\\
+\end{split}
+\end{equation*}
+
+Entonces calculamos a $y$ como\[y = (-1)^0\cdot(2)^0\cdot(3)^4\cdot(5)^0\cdot(13)^0\cdot(17)^1\cdot(19)^0\cdot(29)^0 = 1377\]
+
+Y así, vemos si se cumple que $$x \not \equiv y mod (87463)$$ entonces proseguimos con sacar el $MCD(x-y, n)$ debido a que $$6073 \not \equiv \pm 1377 mod (87463)$$
+
+Calculamos el $MCD(x-y, n) = MCD(6073-1377, 87463) = 587$
+\[\Rightarrow 87463 = 587 \cdot q\]
+\[q = 149\]
+
+Por lo tanto:
+\[n = p \cdot q\]
+\[ 87463 = 587 \cdot 149\]
+
+
 \item[d)] Descrifrar el siguiente mensaje con parámetros públicos (87463, 15157), dar la llave privada $d$, recuerde el texto se tranforma módulo 26
 \end{itemize}
 
