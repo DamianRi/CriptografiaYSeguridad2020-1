@@ -1,5 +1,19 @@
 #! /usr/bin/env python3
 #-*- coding: utf-8 -*-
+
+'''
+Nota: Código implementado con Python 3.7.5
+
+Dependencias:
+
+Se debe tener instalado el paquete **PyCryptodome**, si se tiene configurado Python 3 de manera adecuada en la computadora y teniendo instalado Pip 3, es suficiente con ejecutar el siguiente comando para descargar el paquete:
+```
+    $ pip3 install pycryptodome
+```
+De otra manera se deja el enlace para su instalación [**PyCryptodome**](https://pycryptodome.readthedocs.io/en/latest/src/installation.html)
+'''
+
+
 from Crypto.Util import number
 
 class RSA():
