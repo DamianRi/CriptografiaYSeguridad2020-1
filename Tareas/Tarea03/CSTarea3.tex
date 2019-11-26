@@ -28,27 +28,29 @@ $$y^2 = 9 \Rightarrow  y = 3$$
 Por lo tanto (7,3) $\in E(Z_{11})$
 
 \item[b) ] dar el orden de (7, 3).\\
-Su orden es de 7
+Su orden es de 7, puesto que 7(7, 3) = $\infty$
 
 \item[c) ] Usar el teorema de Hasse y el orden de (7, 3) para encontrar el orden de $E(Z_{11})$.\\
 El teorema dice que
 $$q+1-2\sqrt{q} \leq \#E(F_q) \leq q+1+2\sqrt{q}$$
 Entonces
-$$11+1-2\sqrt{11} \leq \#E(Z_{11}) \leq 1+1+2\sqrt{1}$$
+$$11+1-2\sqrt{11} \leq \#E(Z_{11}) \leq 11+1+2\sqrt{1}$$
 Así
-$$5 \leq \#E(Z_{11}) \leq 19$$
-
+$$5 \leq \#E(Z_{11}) \leq 18$$
+Como debe ser un múltiplo del orden del punto (7, 3), entonces este puede ser 7 o 14.
 
 \item[d ) ] Verificar que la cardinalidad de E es igual a $q+1+ \sum_{x \in Z_{11}} (\frac{x^3 + 7x + 2}{11})$ donde $\frac{x^3 + 7x + 2}{11}$ es el símbolo de Lengendre y q = 11.\\
 Tenemos que 
 $$q+1+ \sum_{x \in Z_{11}} (\frac{x^3 + 7x + 2}{11})$$
-así tenemos
+y así
 \begin{equation*}
 \begin{split}
-	&\#E(Z_{11}) = 11+1+\frac{2+10+24+50+94+162+260+394+570+794+1072}{11}\\
-	&\quad\quad\quad\quad = 12 + (312 mod 11)\\
-	&\quad\quad\quad\quad = 12 + 4\\ 
-	&\quad\quad\quad\quad = 16
+	&\#E(Z_{11}) = 11+1\\
+	&\quad\quad\quad\quad\quad\quad+\left(\frac{2}{11}\right)+\left(\frac{10}{11}\right)+\left(\frac{24}{11}\right)+\left(\frac{50}{11}\right)+\left(\frac{94}{11}\right)+\left(\frac{162}{11}\right)\\
+	&\quad\quad\quad\quad\quad\quad+\left(\frac{260}{11}\right)+\left(\frac{394}{11}\right)+\left(\frac{570}{11}\right)+\left(\frac{794}{11}\right)+\left(\frac{1072}{11}\right)\\
+	&\quad\quad\quad\quad = 12 + (-1)+(-1)+(-1)+(-1)+(-1)+(-1)+(-1)+1+1+(-1)+1\\
+	&\quad\quad\quad\quad = 12 + (-5)\\ 
+	&\quad\quad\quad\quad = 7
 \end{split}
 \end{equation*}
 \end{itemize}
@@ -65,16 +67,16 @@ Sea la ecuación $y^2 = x^3 + x + 1$ en $Z_{77}$ y sea el punto P = (0, 1) que s
 &\Rightarrow \lambda = \frac{1-47}{0-58} = \frac{23}{29} mod 77 = 30\\
 &\Rightarrow (x_3, y_3) = ((30)^2-58-0 mod 77, 30(58-72)-47 mod 77)\\
 &\quad 3P = (72, 72)\\
-4P = 2P + 2P = (58, 47) + (58, 47)\\
-&\Rightarrow \lambda = \frac{3(58)^2 + 1}{2(47)} = \frac{6729}{94} mod 77 = 38\\
-&\Rightarrow (x_3, y_3) = ((38)^2-2(58) mod 77, 38(58-19)-47 mod 77)\\
-&\quad 4P = (19, 49)\\
-5P = 4P + P = (19, 49) + (0, 1)\\
-&\Rightarrow \lambda = \frac{1-49}{0-19} = \frac{48}{19} mod 77 = 39\\
-&\Rightarrow (x_3, y_3) = ((39)^2-19-0 mod 77, 39(19-39)-49 mod 77)\\
-&\quad 5P = (39, 18)\\
+4P = 3P + P = (72, 72) + (0, 1)\\
+&\Rightarrow \lambda = \frac{1-72}{0-72} = \frac{71}{72} mod 77 = 32\\
+&\Rightarrow (x_3, y_3) = ((32)^2-72-0 mod 77, 32(72-28)-72 mod 77)\\
+&\quad 4P = (28, 27)\\
+5P = 4P + P = (28, 27) + (0, 1)\\
+&\Rightarrow \lambda = \frac{1-27}{0-28} \Rightarrow ...
 \end{split}
 \end{equation*}
+Como necesitamos calcular el inverso de 28, no existe en $Z_{77}$, puesto que mcd(28, 77) = 7, no son primos entre si, además $1 < 7 < 77$, por lo cual 28, es un factor de 77.
+
 
 \section*{Ejercicio 4}
 Sea E la curva elíptica dada por los puntos que satisfacen la ecuación $y^2 = x^3 + 7x + 19$ en $Z_{31}$ y P = (18, 26) un punto en E de orden 39, el ECIES simplificado definido sobre $Z^*_{31}$ como espacio de texto plano, supongamos que la clave privada es m = 8
