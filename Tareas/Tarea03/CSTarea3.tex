@@ -4,6 +4,11 @@
 \usepackage{amsthm}
 \usepackage{amssymb}
 \usepackage{natbib}
+\usepackage{amsfonts} 
+\usepackage{enumerate}
+\usepackage{amssymb}
+\usepackage{multirow}
+
 
 \usepackage{multicol}
 \usepackage{colortbl}
@@ -34,7 +39,7 @@ Su orden es de 7, puesto que 7(7, 3) = $\infty$
 El teorema dice que
 $$q+1-2\sqrt{q} \leq \#E(F_q) \leq q+1+2\sqrt{q}$$
 Entonces
-$$11+1-2\sqrt{11} \leq \#E(Z_{11}) \leq 11+1+2\sqrt{1}$$
+$$11+1-2\sqrt{11} \leq \#E(Z_{11}) \leq 11+1+2\sqrt{11}$$
 Así
 $$5 \leq \#E(Z_{11}) \leq 18$$
 Como debe ser un múltiplo del orden del punto (7, 3), entonces este puede ser 7 o 14.
@@ -77,17 +82,175 @@ Sea la ecuación $y^2 = x^3 + x + 1$ en $Z_{77}$ y sea el punto P = (0, 1) que s
 \end{equation*}
 Como necesitamos calcular el inverso de 28, no existe en $Z_{77}$, puesto que mcd(28, 77) = 7, no son primos entre si, además $1 < 7 < 77$, por lo cual 28, es un factor de 77.
 
+\section*{Ejercicio 3}
+Sea la curva elíptica \textit{E} dada por$y^2=x^3+13x+16$ en  $\mathbb{Z}_{17}$ hacer:
+\begin{enumerate}[a)]
+\item Cálcula y muestra todos los puntos de \textit{E}
+
+Para poder saber cuantos puntos hay en \textit{E}, buscamos $\#E(\mathbb{F}_{17})$.
+Sea el punto (0,13) en la curva, al calcular su orden N obtenemos que $N=25$. Entonces, de acuerdo al Teorema de Hesse:
+\[
+q + 1 - 2\sqrt{ q } \leq \#E(\mathbb{F}_{17}) \leq q + 1 + 2\sqrt{ q }
+\]
+Tenemos entonces
+\[
+17 + 1 - 2\sqrt{ 17 } \leq \#E(\mathbb{F}_{17}) \leq 17 + 1 + 2\sqrt{ 17 }
+\]
+\[
+18 - 2\sqrt{ 17 } \leq \#E(\mathbb{F}_{17}) \leq 18 + 2\sqrt{ 17 }
+\]
+Donde $\#E(\mathbb{F}_{17})$ debe de ser un múltiplo de N. Por lo tanto, después de resolver la desigualdad:
+\[
+\#E(\mathbb{F}_{17})=25
+\]
+\\
+Al calcular los puntos obtenemos los siguientes
+\begin{table}[htbp]
+\begin{center}
+\begin{tabular}{|l|l|l|l|}
+\hline
+x & $x^3+x+1$ & y & Puntos \\
+\hline \hline
+$\infty$ & - & - & $\infty$\\ \hline
+0 & 5 & $\pm4$ & $(0,4), (0,13)$ \\ \hline
+1 & 13 & $\pm8$ & $(1,8), (1,9)$\\ \hline
+2 & 16 & $\pm4$ & $(2,4), (2,13)$\\ \hline
+4 & 13 & $\pm8$& $(4,8), (4,9)$\\ \hline
+5 & 2 & $\pm6$ & $(5,6), (5,11)$\\ \hline
+6 & 4 & $\pm2$ & $(6,2), (6,15)$\\ \hline
+7 & 8 & $\pm5$  & $(7,5), (7,12)$\\ \hline
+12 & 13 & $\pm8$ & $(12,8), (12,9)$\\ \hline
+13 & 2 & $\pm6$& $(13,6), (13,11)$\\ \hline
+14 & 1 & $\pm1$& $(14,1), (14,16)$\\ \hline
+15 & 16 & $\pm4$ & $(15,4), (15,13)$\\ \hline
+16 & 2 & $\pm6 $& $(16,6), (16,11)$\\ \hline
+\end{tabular}
+\caption{Tabla de los puntos en \textit{E}}
+\label{tabla:sencilla}
+\end{center}
+\end{table}
+\item Alicia desea enviar el siguiente mensaje $c = (a,b) = ((6,2),(14,1))$ a Bob, los
+parámetros públicos de Bob son $\alpha = (0, 13) \in E$ una raíz primitiva y $\beta = (15, 13)$
+donde $\beta = s\alpha$ y s es su llave privada. Usar cualquier algoritmo mencionado en la
+sección 5.2 del libro "Elliptic Curves Number Theory and Cryptography de Lawrence
+C. Washinton” Para resolver el problema del logaritmo discreto.
+\\
+\\
+Usando el método de "\textbf{Baby step, Giant Step}".
+\\
+\\
+Sea dentro del algoritmo $G= E(\mathbb{F}_{17})$, P=(0,13), Q=(15,13) y N=25 a lo más de acuerdo a Hesse. Obtenemos: 
+\[
+m=6
+\]
+Enseguida calculamos iP para $1\leq i<6$ y obtenemos la lista de puntos.
+\\
+\[
+(0,13), (13,6), (6,2), (12,9), (7,12)
+\]
+Después calculamos $Q-jmP$ para j={0,1,2,3,4,5}
+\\
+\begin{center}
+$j=0 \Rightarrow Q-0 =(15,13)$
+\\
+$j=1 \Rightarrow Q-6P =(15,13)-(1,9)=(15,13)+(1,-9)=(0,13)$
+\\
+\end{center}
+Donde encontramos que el punto (0,13) coincide con el primer punto de la liste, por lo tanto obtenemos los valores $i=1$ y $j=1$.
+A partir de esto resolvemos $Q=kP$ con $k \equiv i+jm \pmod{N}$ de la forma que $k \equiv 7 \pmod{25}$ y de ahí obtenemos que:
+\[
+(15,13)= 7P
+\]
+Donde $k=s=7$
+\\
+\item A partir de la información encontrada en b) descifra el mensaje.
+
+Para descifrar el mensaje solo tenemos que resolver $x=y_2-ky_1$ donde $k=s$ que ya habíamos encontrado.
+Entonces 
+\begin{center}
+$x=(14,1)-7(6,2)$
+\\
+$x=(14,1)-(12,8)$
+\\
+$x=(14,1)+(12,9)$
+\end{center}
+Y el mensaje descifrado es \textbf{(7,5)}
+\end{enumerate}
 
 \section*{Ejercicio 4}
 Sea E la curva elíptica dada por los puntos que satisfacen la ecuación $y^2 = x^3 + 7x + 19$ en $Z_{31}$ y P = (18, 26) un punto en E de orden 39, el ECIES simplificado definido sobre $Z^*_{31}$ como espacio de texto plano, supongamos que la clave privada es m = 8
-\begin{itemize}
-\item[a ) ] Calcula Q = mP .
-\item[b ) ] Descifra la siguiente cadena de texto cifrado\\
-((4, 1), 1); ((11, 0), 18); ((27, 1), 17); ((28, 1), 29); ((23, 0), 26).
-\item[c ) ]  Supongamos que cada texto plano representa un carácter alfabético, convierte el texto plano en una palabra. Usa la asociación (A $\rightarrow$ 1, . . . , z $\rightarrow$ 26) en este caso 0 no es considerado como un texto plano o un par ordenado.
 
-\end{itemize}
+\begin{enumerate}[a)]
+\item Calcula Q=mP
+\\
+Tenemos $m=8$
+\begin{center}
+$2P=(28,23)$
+\\
+$4P=(11,30)$
+\\
+$8P=(10,2)$
 
+\end{center}
+Por lo tanto $Q=(10,2)$
 
+\item Descifra la siguiente cadena de texto cifrado.
+
+\[
+((4, 1), 1); ((11, 0), 18); ((27, 1), 17); ((28, 1), 29); ((23, 0), 26)
+\]
+\\
+Para el primer punto, descomprimimos (4,1).
+\begin{center}
+$z=(4)^3+7(4)+19$
+\\
+$z=64+28+29= 111 \equiv 18 \pmod{31} $
+$z=18$
+\end{center}
+
+Pero nosotros buscamos y que es $\sqrt{z}$ por lo tanto hacemos
+\\
+\begin{center}
+$y=z^{\left(  \frac{p+1}{4} \right) \pmod{p}}$
+\\
+$y=z^{\left(  \frac{32}{4}\right) \pmod{31}}$
+\\
+$y=7$
+\end{center}
+
+Como $7 \equiv 1 \pmod{2}$, entonces al descomprimirlo es (4,7). Si lo multiplicamos por m, tenemos $8(4,7)=(2,17)$ 
+\\
+Al tener este punto, podemos realizar su descifrado como:
+\[
+d_k(y)= y_2(x_0)^{-1} \pmod{31} = 1(2)^{-1} \pmod{31}= 16
+\]
+\\
+\\
+Si realizamos el mismo proceso para cada punto, al descomprimirlos y descifrarlos, tenemos:
+\begin{enumerate}[*]
+\item Para ((11,0), 18) el punto descomprimido es ((11,30),18), el punto a descifrar es (23,3) y el valor obtenido al descifrar es \textbf{21}
+\item Para ((27,1), 17) el punto descomprimido es ((27,19),17), el punto a descifrar es (18,26) y el valor obtenido al descifrar es \textbf{13}
+\item Para ((28,1), 29) el punto descomprimido es ((28,23),29), el punto a descifrar es (29,20) y el valor obtenido al descifrar es \textbf{1}
+\item Para ((23,0), 26) el punto descomprimido es ((23,28),26), el punto a descifrar es (3,25) y el valor obtenido al descifrar es \textbf{19}
+\end{enumerate}
+
+\item Supongamos que cada texto plano representa un carácter alfabético, convierte el
+texto plano en una palabra. Usa la asociación (A$\rightarrow$1,..z$\rightarrow$26)
+no es considerado como un texto plano o un par ordenado.
+\\
+De acuerdo a los valores obtenmidos anteriormente, tenemos
+\begin{center}
+$16=P$
+\\
+$21=U$
+\\
+$13=M$
+\\
+$1=A$
+\\
+$19=S$
+\end{center}
+
+\end{enumerate}
 \end{document}
 
