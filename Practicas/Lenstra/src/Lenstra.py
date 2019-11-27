@@ -22,9 +22,7 @@ import random
 import sys
 import math
 
-#num = 1073561597    // Número a factorizar
-#NUM = 87463
-NUM = 455839
+NUM = 87463 # Número por defecto a factorizar
 
 class Punto:
     
@@ -101,19 +99,31 @@ def multiplica_k_punto(k, p):
 
 if __name__ == "__main__":
 
-    mcd = 0
-    NUM = int(input("Número a Factorizar:"))
+    NUM = input("Ingresa un número a Factorizar (o enter para un random):")
+    """
+    """
+    if NUM == "":
+        p = number.getPrime(13)
+        q = number.getPrime(13)
+        NUM = p*q
+    else:
+        NUM = int(NUM)
+    
+    #print("p=", p, "| q=", q)
+    print("N = ", NUM)
     k = int(input("Número máximo de iteraciones (k): "))
+        
     #a = int(input("Ingresa un valor para A:"))
     a = random.randrange(1, NUM)
     B = a*(-1)
 
     # Un punto no trivial en la curva
     p_inicial = Punto(1,1)
-
     pt = Punto(0,0)
-    print("Curva Elíptica: y^2 = x^3 +",a,"x",B)
 
+    print("Curva Elíptica: y^2 = x^3 +"+str(a)+"x + ("+str(B)+")")
+
+    mcd = 0
     #   Se Realiza la iteración desde a=2 hasta k
     for a in range(2, k):
         pt = multiplica_k_punto(a, p_inicial)   # Calculamos kP
@@ -121,10 +131,10 @@ if __name__ == "__main__":
         # Obtenemos el máximo común divisor
         mcd = number.GCD(pt.den, NUM)
         if mcd != 1:    # Si no son primos
-            print("\n\t=>  %d es un factor de %d" %(mcd, NUM))
+            print("\n\t=>  p = %d es un factor de %d" %(mcd, NUM))
             q = NUM/mcd
-            print("\t=>  %d = %d*%d" %(NUM, mcd, q))
+            print("\t=>  N = %d = %d*%d = p*q" %(NUM, mcd, q))
             quit()
 
-    print("\n\tXx No se encontro un factor de %d" %(NUM))
+    print("\n\tXx No se encontro un factor de %d con las %d iteraciones" %(NUM, k))
 
