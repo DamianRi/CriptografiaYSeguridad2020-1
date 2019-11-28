@@ -21,6 +21,7 @@ from Crypto.Util import number
 import random
 import sys
 import math
+import time
 
 NUM = 87463 # Número por defecto a factorizar
 
@@ -111,8 +112,14 @@ if __name__ == "__main__":
     
     #print("p=", p, "| q=", q)
     print("N = ", NUM)
-    k = int(input("Número máximo de iteraciones (k): "))
-        
+    k = input("Número máximo de iteraciones K (o enter para k por defecto): ")
+    if k == "":
+        cad = '{:<0'+str(len(str(NUM)))+'d}'
+        k = int(cad.format(1))
+    else:
+        k = int(k)
+    print("K =",k)
+
     #a = int(input("Ingresa un valor para A:"))
     a = random.randrange(1, NUM)
     B = a*(-1)
@@ -123,6 +130,7 @@ if __name__ == "__main__":
 
     print("Curva Elíptica: y^2 = x^3 +"+str(a)+"x + ("+str(B)+")")
 
+    start_time = time.time()
     mcd = 0
     #   Se Realiza la iteración desde a=2 hasta k
     for a in range(2, k):
@@ -134,7 +142,9 @@ if __name__ == "__main__":
             print("\n\t=>  p = %d es un factor de %d" %(mcd, NUM))
             q = NUM/mcd
             print("\t=>  N = %d = %d*%d = p*q" %(NUM, mcd, q))
+            print("\n--- %s seconds ---" % (time.time() - start_time))
             quit()
 
     print("\n\tXx No se encontro un factor de %d con las %d iteraciones" %(NUM, k))
 
+main()
