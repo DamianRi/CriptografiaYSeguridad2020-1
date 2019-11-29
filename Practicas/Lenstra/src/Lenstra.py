@@ -15,33 +15,35 @@ Se debe tener instalado el paquete **PyCryptodome**, si se tiene configurado Pyt
 ```
 De otra manera se deja el enlace para su instalación [**PyCryptodome**](https://pycryptodome.readthedocs.io/en/latest/src/installation.html)
 
+Ejecución: 
+$   python3 Lenstra.py
 - - -
 """
 from Crypto.Util import number
 import random
-import sys
 import math
-import time
 
 NUM = 87463 # Número por defecto a factorizar
 
+"""
+    Clase para la representación de un Punto,
+    son lo objetos con los que se trabaja para el cálculo 
+    de la factorización del número
+"""
 class Punto:
     
     def __init__(self, x, y):
         self.x = x
         self.y = y
-        self.lam = 0
-        self.num = 0
-        self.den = 0
-
-def modn(x):
-    return (x+NUM)%NUM
+        self.num = 0    # num: numerador del valor de lambda
+        self.den = 0    # den: denominador del valor de lambda
+        self.lam = 0    # lam: valor del lambda
 
 """
     Función para realzar la suma entre dos Puntos diferentes
 """
 def suma_puntos_diferentes(p, q):
-    pr = Punto(0,0)
+    pr = Punto(0,0) # Punto para regresar el resultado de la suma de p y q
 
     if p.x == 0 and p.y == 0:
         return q
@@ -50,23 +52,41 @@ def suma_puntos_diferentes(p, q):
     if (p.x == q.x) and (q.x == (-1*p.y)):
         return pr
 
-    pr.lam = modn((q.y-p.y)*number.inverse(q.x - p.x, NUM))
-    pr.num = modn(q.y - p.y)
-    pr.den = modn(q.x - p.x)
-    pr.x = modn (modn (pr.lam * pr.lam) + modn ((-1 * p.x)) + modn ((-1 * q.x)))
-    pr.y = modn ((pr.lam * (p.x - pr.x)) - p.y)
+    #pr.lam = ((q.y-p.y)*number.inverse(q.x - p.x, NUM)) % NUM
+    pr.num = (q.y - p.y) % NUM
+    pr.den = (q.x - p.x) % NUM
+    pr.lam = pr.num * number.inverse(pr.den, NUM) % NUM
+    
+    #
+    #   x_3 = lam^2 - x_1 - x_2 mod N
+    #
+    pr.x = (math.pow(pr.lam, 2) - p.x - q.x) % NUM
+    #
+    #   y_3 = lam(x_1 - x_3) - y_1 mod N
+    #
+    pr.y = ((pr.lam * (p.x - pr.x)) - p.y) % NUM
+
     return pr
 
 """
     Función para realizar la suma entre dos Puntos iguales
 """
 def suma_puntos_iguales(p):
-    pr = Punto(0,0)
-    pr.lam = modn (((3 * (p.x * p.x)) + a) * number.inverse(p.y * 2, NUM))
-    pr.num = modn ((3 * (p.x * p.x) + a))
-    pr.den = modn (p.y * 2)
-    pr.x = modn (modn ((pr.lam * pr.lam)) - modn (2 * p.x))
-    pr.y = modn ((pr.lam * (p.x - pr.x)) - p.y)
+    pr = Punto(0,0) # Punto para regresar el resultado de la suma de p y q
+    
+    pr.num = ((3 * (math.pow(p.x, 2))) + a) % NUM
+    pr.den = (2 * p.y)
+    pr.lam = (pr.num * number.inverse(pr.den, NUM)) % NUM
+
+    #
+    #   x_3 = lam^2 - (2*x_1)  mod N
+    #
+    pr.x = (math.pow(pr.lam, 2) - (2 * p.x)) % NUM
+    #
+    #   y_3 = lam(x_1 - x_3) - y_1 mod N
+    #
+    pr.y = ((pr.lam * (p.x - pr.x)) - p.y) % NUM
+    
     return pr
 
 """
@@ -88,8 +108,8 @@ def son_iguales(p,q):
     Función para realizar k veces la suma de un punto p
 """
 def multiplica_k_punto(k, p):
-    pr = Punto(0,0)
-    pt = Punto(0,0)
+    pr = Punto(0,0) # Punto para regresar el resultado del kP
+    pt = Punto(0,0) # Punto temporal para el calculo de las iteraciones
 
     for i in range(k):
         pt = suma_puntos(p, pr)
@@ -100,37 +120,38 @@ def multiplica_k_punto(k, p):
 
 if __name__ == "__main__":
 
-    NUM = input("Ingresa un número a Factorizar (o enter para un random):")
-    """
-    """
+    print("\n\t --- FACTORIZACIÓN POR ALGORITMO DE LENSTRA ---")
+    NUM = input("\nIngresa un número a Factorizar (o enter para un random):")
+    # Manejo de entrada para un N aleatroio
     if NUM == "":
-        p = number.getPrime(13)
-        q = number.getPrime(13)
+        p = number.getPrime(12)
+        q = number.getPrime(12)
         NUM = p*q
+        print(p, q)
     else:
         NUM = int(NUM)
     
-    #print("p=", p, "| q=", q)
     print("N = ", NUM)
+
     k = input("Número máximo de iteraciones K (o enter para k por defecto): ")
+    # Manejo de entrada para una cantidad K de iteraciones 
     if k == "":
         cad = '{:<0'+str(len(str(NUM)))+'d}'
         k = int(cad.format(1))
     else:
         k = int(k)
+
     print("K =",k)
 
-    #a = int(input("Ingresa un valor para A:"))
-    a = random.randrange(1, NUM)
-    B = a*(-1)
+    a = random.randrange(1, NUM)    # coeficiente 'a' aleatorio de la curva
+    B = a*(-1)  # Coeficiente 'B' de la curva
 
     # Un punto no trivial en la curva
     p_inicial = Punto(1,1)
-    pt = Punto(0,0)
+    pt = Punto(0,0) # Punto temporal para las operaciones
 
     print("Curva Elíptica: y^2 = x^3 +"+str(a)+"x + ("+str(B)+")")
 
-    start_time = time.time()
     mcd = 0
     #   Se Realiza la iteración desde a=2 hasta k
     for a in range(2, k):
@@ -138,13 +159,10 @@ if __name__ == "__main__":
 
         # Obtenemos el máximo común divisor
         mcd = number.GCD(pt.den, NUM)
-        if mcd != 1:    # Si no son primos
+        if mcd != 1:    # Si el denominador de lambda no tiene inverso en Z_NUM
             print("\n\t=>  p = %d es un factor de %d" %(mcd, NUM))
             q = NUM/mcd
-            print("\t=>  N = %d = %d*%d = p*q" %(NUM, mcd, q))
-            print("\n--- %s seconds ---" % (time.time() - start_time))
+            print("\t=>  N = %d = %d*%d = p*q\n" %(NUM, mcd, q))
             quit()
 
     print("\n\tXx No se encontro un factor de %d con las %d iteraciones" %(NUM, k))
-
-main()
